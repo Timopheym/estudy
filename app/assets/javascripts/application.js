@@ -12,4 +12,10 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require social_stream-base
+//= require social_stream-documents
+//= require social_stream-events
+//= require social_stream-linkser
+//= require social_stream-presence
+//= require social_stream-oauth2_server
 //= require_tree .

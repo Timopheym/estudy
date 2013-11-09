@@ -1,4 +1,0 @@
-estudy
-======
-
-Online Education Platform

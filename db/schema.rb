@@ -11,352 +11,351 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131108215828) do
+ActiveRecord::Schema.define(:version => 20131019131528) do
 
   create_table "activities", :force => true do |t|
-    t.integer  "user_id",    :limit => 10
-    t.string   "action",     :limit => 50
-    t.integer  "item_id",    :limit => 10
-    t.string   "item_type"
-    t.datetime "created_at"
-  end
-
-  add_index "activities", ["created_at"], :name => "index_activities_on_created_at"
-  add_index "activities", ["user_id"], :name => "index_activities_on_user_id"
-
-  create_table "ads", :force => true do |t|
-    t.string   "name"
-    t.text     "html"
-    t.integer  "frequency"
+    t.integer  "activity_verb_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "start_date"
-    t.datetime "end_date"
-    t.string   "location"
-    t.boolean  "published",        :default => false
-    t.boolean  "time_constrained", :default => false
-    t.string   "audience",         :default => "all"
+    t.string   "ancestry"
+    t.integer  "author_id"
+    t.integer  "user_author_id"
+    t.integer  "owner_id"
   end
 
-  create_table "albums", :force => true do |t|
-    t.string   "title"
+  add_index "activities", ["activity_verb_id"], :name => "index_activities_on_activity_verb_id"
+  add_index "activities", ["author_id"], :name => "index_activities_on_author_id"
+  add_index "activities", ["owner_id"], :name => "index_activities_on_owner_id"
+  add_index "activities", ["user_author_id"], :name => "index_activities_on_user_author_id"
+
+  create_table "activity_actions", :force => true do |t|
+    t.integer  "actor_id"
+    t.integer  "activity_object_id"
+    t.boolean  "follow",             :default => false
+    t.boolean  "author",             :default => false
+    t.boolean  "user_author",        :default => false
+    t.boolean  "owner",              :default => false
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
+  end
+
+  add_index "activity_actions", ["activity_object_id"], :name => "index_activity_actions_on_activity_object_id"
+  add_index "activity_actions", ["actor_id"], :name => "index_activity_actions_on_actor_id"
+
+  create_table "activity_object_activities", :force => true do |t|
+    t.integer  "activity_id"
+    t.integer  "activity_object_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "object_type"
+  end
+
+  add_index "activity_object_activities", ["activity_id"], :name => "index_activity_object_activities_on_activity_id"
+  add_index "activity_object_activities", ["activity_object_id"], :name => "index_activity_object_activities_on_activity_object_id"
+
+  create_table "activity_object_audiences", :force => true do |t|
+    t.integer  "activity_object_id"
+    t.integer  "relation_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  create_table "activity_object_properties", :force => true do |t|
+    t.integer "activity_object_id"
+    t.integer "property_id"
+    t.string  "type"
+    t.boolean "main"
+  end
+
+  add_index "activity_object_properties", ["activity_object_id"], :name => "index_activity_object_properties_on_activity_object_id"
+  add_index "activity_object_properties", ["property_id"], :name => "index_activity_object_properties_on_property_id"
+
+  create_table "activity_objects", :force => true do |t|
+    t.string   "title",                        :default => ""
     t.text     "description"
-    t.integer  "user_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-    t.integer  "view_count"
-  end
-
-  create_table "assets", :force => true do |t|
-    t.string   "asset_file_name"
-    t.integer  "width"
-    t.integer  "height"
-    t.string   "asset_content_type"
-    t.integer  "asset_file_size"
-    t.string   "attachable_type"
-    t.integer  "attachable_id"
-    t.datetime "updated_at"
     t.datetime "created_at"
-    t.string   "thumbnail"
-    t.integer  "parent_id"
-    t.datetime "asset_updated_at"
+    t.datetime "updated_at"
+    t.string   "object_type",    :limit => 45
+    t.integer  "like_count",                   :default => 0
+    t.integer  "follower_count",               :default => 0
+    t.integer  "visit_count",                  :default => 0
+    t.integer  "comment_count",                :default => 0
   end
 
-  create_table "authorizations", :force => true do |t|
+  create_table "activity_verbs", :force => true do |t|
+    t.string   "name",       :limit => 45
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "actor_keys", :force => true do |t|
+    t.integer  "actor_id"
+    t.binary   "key_der"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "actor_keys", ["actor_id"], :name => "index_actor_keys_on_actor_id"
+
+  create_table "actors", :force => true do |t|
+    t.string   "name"
+    t.string   "email",                 :default => "",   :null => false
+    t.string   "slug"
+    t.string   "subject_type"
+    t.boolean  "notify_by_email",       :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "activity_object_id"
+    t.string   "logo_file_name"
+    t.string   "logo_content_type"
+    t.integer  "logo_file_size"
+    t.datetime "logo_updated_at"
+    t.string   "notification_settings"
+  end
+
+  add_index "actors", ["activity_object_id"], :name => "index_actors_on_activity_object_id"
+  add_index "actors", ["email"], :name => "index_actors_on_email"
+  add_index "actors", ["slug"], :name => "index_actors_on_slug", :unique => true
+
+  create_table "audiences", :force => true do |t|
+    t.integer "relation_id"
+    t.integer "activity_id"
+  end
+
+  add_index "audiences", ["activity_id"], :name => "index_audiences_on_activity_id"
+  add_index "audiences", ["relation_id"], :name => "index_audiences_on_relation_id"
+
+  create_table "authentications", :force => true do |t|
     t.integer  "user_id"
     t.string   "provider"
     t.string   "uid"
-    t.string   "name"
-    t.string   "nickname"
-    t.string   "email"
-    t.string   "picture_url"
-    t.string   "access_token"
-    t.string   "access_token_secret"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
-  create_table "categories", :force => true do |t|
-    t.string "name"
-    t.text   "tips"
-    t.string "new_post_text"
-    t.string "nav_text"
-  end
-
-  create_table "choices", :force => true do |t|
-    t.integer "poll_id"
-    t.string  "description"
-    t.integer "votes_count", :default => 0
-  end
-
-  create_table "clippings", :force => true do |t|
-    t.string   "url"
-    t.integer  "user_id"
-    t.string   "image_url"
-    t.string   "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "favorited_count", :default => 0
-  end
-
-  add_index "clippings", ["created_at"], :name => "index_clippings_on_created_at"
+  add_index "authentications", ["user_id"], :name => "index_authentications_on_user_id"
 
   create_table "comments", :force => true do |t|
-    t.string   "title"
-    t.integer  "commentable_id"
-    t.string   "commentable_type"
-    t.integer  "user_id"
-    t.integer  "recipient_id"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
-    t.text     "comment"
-    t.string   "author_name"
-    t.string   "author_email"
-    t.string   "author_url"
-    t.string   "author_ip"
-    t.boolean  "notify_by_email",  :default => true
+    t.integer  "activity_object_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "comments", ["commentable_id"], :name => "index_comments_on_commentable_id"
-  add_index "comments", ["commentable_type"], :name => "index_comments_on_commentable_type"
-  add_index "comments", ["created_at"], :name => "index_comments_on_created_at"
-  add_index "comments", ["recipient_id"], :name => "index_comments_on_recipient_id"
-  add_index "comments", ["user_id"], :name => "fk_comments_user"
+  add_index "comments", ["activity_object_id"], :name => "index_comments_on_activity_object_id"
 
-  create_table "countries", :force => true do |t|
-    t.string "name"
+  create_table "contacts", :force => true do |t|
+    t.integer  "sender_id"
+    t.integer  "receiver_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "inverse_id"
+    t.integer  "ties_count",  :default => 0
   end
+
+  add_index "contacts", ["inverse_id"], :name => "index_contacts_on_inverse_id"
+  add_index "contacts", ["receiver_id"], :name => "index_contacts_on_receiver_id"
+  add_index "contacts", ["sender_id"], :name => "index_contacts_on_sender_id"
+
+  create_table "conversations", :force => true do |t|
+    t.string   "subject",    :default => ""
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
+  create_table "documents", :force => true do |t|
+    t.string   "type"
+    t.integer  "activity_object_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.string   "file_file_size"
+    t.boolean  "file_processing"
+  end
+
+  add_index "documents", ["activity_object_id"], :name => "index_documents_on_activity_object_id"
 
   create_table "events", :force => true do |t|
-    t.string   "name"
+    t.integer  "activity_object_id"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.boolean  "all_day"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+    t.integer  "room_id"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.integer  "frequency",          :default => 0
+    t.integer  "interval"
+    t.integer  "days",               :default => 0
+    t.integer  "interval_flag",      :default => 0
+  end
+
+  add_index "events", ["room_id"], :name => "index_events_on_room_id"
+
+  create_table "groups", :force => true do |t|
+    t.integer  "actor_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id"
-    t.datetime "start_time"
-    t.datetime "end_time"
-    t.text     "description"
-    t.integer  "metro_area_id"
-    t.string   "location"
-    t.boolean  "allow_rsvp",    :default => true
   end
 
-  create_table "favorites", :force => true do |t|
+  add_index "groups", ["actor_id"], :name => "index_groups_on_actor_id"
+
+  create_table "links", :force => true do |t|
+    t.integer  "activity_object_id"
+    t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "created_at"
-    t.string   "favoritable_type"
-    t.integer  "favoritable_id"
-    t.integer  "user_id"
-    t.string   "ip_address",       :default => ""
-  end
-
-  add_index "favorites", ["user_id"], :name => "fk_favorites_user"
-
-  create_table "forums", :force => true do |t|
-    t.string  "name"
-    t.string  "description"
-    t.integer "topics_count",     :default => 0
-    t.integer "sb_posts_count",   :default => 0
-    t.integer "position"
-    t.text    "description_html"
-    t.string  "owner_type"
-    t.integer "owner_id"
-  end
-
-  create_table "friendship_statuses", :force => true do |t|
-    t.string "name"
-  end
-
-  create_table "friendships", :force => true do |t|
-    t.integer  "friend_id"
-    t.integer  "user_id"
-    t.boolean  "initiator",            :default => false
-    t.datetime "created_at"
-    t.integer  "friendship_status_id"
-  end
-
-  add_index "friendships", ["friendship_status_id"], :name => "index_friendships_on_friendship_status_id"
-  add_index "friendships", ["user_id"], :name => "index_friendships_on_user_id"
-
-  create_table "homepage_features", :force => true do |t|
-    t.datetime "created_at"
     t.string   "url"
-    t.string   "title"
-    t.text     "description"
-    t.datetime "updated_at"
-    t.string   "image_content_type"
-    t.string   "image_file_name"
-    t.integer  "parent_id"
-    t.string   "thumbnail"
-    t.integer  "image_file_size"
-    t.integer  "width"
-    t.integer  "height"
-    t.datetime "image_updated_at"
+    t.string   "callback_url"
+    t.string   "image"
+    t.integer  "width",              :default => 470
+    t.integer  "height",             :default => 353
   end
 
-  create_table "invitations", :force => true do |t|
-    t.string   "email_addresses"
-    t.string   "message"
-    t.integer  "user_id"
-    t.datetime "created_at"
-  end
+  add_index "links", ["activity_object_id"], :name => "index_links_on_activity_object_id"
 
-  create_table "message_threads", :force => true do |t|
-    t.integer  "sender_id"
-    t.integer  "recipient_id"
-    t.integer  "message_id"
-    t.integer  "parent_message_id"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
-  end
-
-  create_table "messages", :force => true do |t|
-    t.integer  "sender_id"
-    t.integer  "recipient_id"
-    t.boolean  "sender_deleted",    :default => false
-    t.boolean  "recipient_deleted", :default => false
-    t.string   "subject"
+  create_table "notifications", :force => true do |t|
+    t.string   "type"
     t.text     "body"
-    t.datetime "read_at"
-    t.datetime "created_at",                           :null => false
-    t.datetime "updated_at",                           :null => false
-    t.integer  "parent_id"
+    t.string   "subject",              :default => ""
+    t.integer  "sender_id"
+    t.string   "sender_type"
+    t.integer  "conversation_id"
+    t.boolean  "draft",                :default => false
+    t.datetime "updated_at",                              :null => false
+    t.datetime "created_at",                              :null => false
+    t.integer  "notified_object_id"
+    t.string   "notified_object_type"
+    t.string   "notification_code"
+    t.string   "attachment"
+    t.boolean  "global",               :default => false
+    t.datetime "expires"
   end
 
-  create_table "metro_areas", :force => true do |t|
-    t.string  "name"
-    t.integer "state_id"
-    t.integer "country_id"
-    t.integer "users_count", :default => 0
-  end
+  add_index "notifications", ["conversation_id"], :name => "index_notifications_on_conversation_id"
 
-  create_table "moderatorships", :force => true do |t|
-    t.integer "forum_id"
-    t.integer "user_id"
-  end
-
-  add_index "moderatorships", ["forum_id"], :name => "index_moderatorships_on_forum_id"
-
-  create_table "monitorships", :force => true do |t|
-    t.integer "topic_id"
-    t.integer "user_id"
-    t.boolean "active",   :default => true
-  end
-
-  create_table "pages", :force => true do |t|
-    t.string   "title"
-    t.text     "body"
-    t.string   "published_as", :limit => 16, :default => "draft"
-    t.boolean  "page_public",                :default => true
-    t.datetime "created_at",                                      :null => false
-    t.datetime "updated_at",                                      :null => false
-  end
-
-  create_table "photos", :force => true do |t|
-    t.string   "name"
-    t.text     "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "oauth2_tokens", :force => true do |t|
+    t.string   "type"
     t.integer  "user_id"
-    t.string   "photo_content_type"
-    t.string   "photo_file_name"
-    t.integer  "photo_file_size"
-    t.integer  "parent_id"
-    t.string   "thumbnail"
-    t.integer  "width"
-    t.integer  "height"
-    t.integer  "album_id"
-    t.integer  "view_count"
-    t.datetime "photo_updated_at"
+    t.integer  "site_id"
+    t.string   "token"
+    t.string   "redirect_uri"
+    t.integer  "refresh_token_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+    t.datetime "expires_at"
   end
 
-  add_index "photos", ["created_at"], :name => "index_photos_on_created_at"
-  add_index "photos", ["parent_id"], :name => "index_photos_on_parent_id"
+  add_index "oauth2_tokens", ["refresh_token_id"], :name => "index_oauth2_tokens_on_refresh_token_id"
+  add_index "oauth2_tokens", ["site_id"], :name => "index_oauth2_tokens_on_site_id"
+  add_index "oauth2_tokens", ["token"], :name => "index_oauth2_tokens_on_token"
+  add_index "oauth2_tokens", ["user_id"], :name => "index_oauth2_tokens_on_user_id"
 
-  create_table "polls", :force => true do |t|
-    t.string   "question"
+  create_table "permissions", :force => true do |t|
+    t.string   "action"
+    t.string   "object"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "post_id"
-    t.integer  "votes_count", :default => 0
   end
-
-  add_index "polls", ["created_at"], :name => "index_polls_on_created_at"
-  add_index "polls", ["post_id"], :name => "index_polls_on_post_id"
 
   create_table "posts", :force => true do |t|
+    t.integer  "activity_object_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "raw_post"
-    t.text     "post"
-    t.string   "title"
-    t.integer  "category_id"
-    t.integer  "user_id"
-    t.integer  "view_count",                               :default => 0
-    t.integer  "emailed_count",                            :default => 0
-    t.integer  "favorited_count",                          :default => 0
-    t.string   "published_as",               :limit => 16, :default => "draft"
-    t.datetime "published_at"
-    t.boolean  "send_comment_notifications",               :default => true
   end
 
-  add_index "posts", ["category_id"], :name => "index_posts_on_category_id"
-  add_index "posts", ["published_as"], :name => "index_posts_on_published_as"
-  add_index "posts", ["published_at"], :name => "index_posts_on_published_at"
-  add_index "posts", ["user_id"], :name => "index_posts_on_user_id"
+  add_index "posts", ["activity_object_id"], :name => "index_posts_on_activity_object_id"
 
-  create_table "roles", :force => true do |t|
-    t.string "name"
-  end
-
-  create_table "rsvps", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "event_id"
-    t.integer  "attendees_count"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
-  end
-
-  create_table "sb_posts", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "topic_id"
-    t.text     "body"
+  create_table "profiles", :force => true do |t|
+    t.integer  "actor_id"
+    t.date     "birthday"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "forum_id"
-    t.text     "body_html"
-    t.string   "author_name"
-    t.string   "author_email"
-    t.string   "author_url"
-    t.string   "author_ip"
+    t.string   "organization", :limit => 45
+    t.string   "phone",        :limit => 45
+    t.string   "mobile",       :limit => 45
+    t.string   "fax",          :limit => 45
+    t.string   "address"
+    t.string   "city"
+    t.string   "zipcode",      :limit => 45
+    t.string   "province",     :limit => 45
+    t.string   "country",      :limit => 45
+    t.integer  "prefix_key"
+    t.string   "description"
+    t.string   "experience"
+    t.string   "website"
+    t.string   "skype",        :limit => 45
+    t.string   "im",           :limit => 45
   end
 
-  add_index "sb_posts", ["forum_id", "created_at"], :name => "index_sb_posts_on_forum_id"
-  add_index "sb_posts", ["user_id", "created_at"], :name => "index_sb_posts_on_user_id"
+  add_index "profiles", ["actor_id"], :name => "index_profiles_on_actor_id"
 
-  create_table "sessions", :force => true do |t|
-    t.string   "sessid"
-    t.text     "data"
-    t.datetime "updated_at"
+  create_table "receipts", :force => true do |t|
+    t.integer  "receiver_id"
+    t.string   "receiver_type"
+    t.integer  "notification_id",                                  :null => false
+    t.boolean  "is_read",                       :default => false
+    t.boolean  "trashed",                       :default => false
+    t.boolean  "deleted",                       :default => false
+    t.string   "mailbox_type",    :limit => 25
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+  end
+
+  add_index "receipts", ["notification_id"], :name => "index_receipts_on_notification_id"
+
+  create_table "relation_permissions", :force => true do |t|
+    t.integer  "relation_id"
+    t.integer  "permission_id"
     t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "sessions", ["sessid"], :name => "index_sessions_on_sessid"
+  add_index "relation_permissions", ["permission_id"], :name => "index_relation_permissions_on_permission_id"
+  add_index "relation_permissions", ["relation_id"], :name => "index_relation_permissions_on_relation_id"
 
-  create_table "slugs", :force => true do |t|
+  create_table "relations", :force => true do |t|
+    t.integer  "actor_id"
+    t.string   "type"
     t.string   "name"
-    t.integer  "sluggable_id"
-    t.integer  "sequence",                     :default => 1, :null => false
-    t.string   "sluggable_type", :limit => 40
-    t.string   "scope"
     t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "sender_type"
+    t.string   "receiver_type"
+    t.string   "ancestry"
   end
 
-  add_index "slugs", ["name", "sluggable_type", "sequence", "scope"], :name => "index_slugs_on_n_s_s_and_s", :unique => true
-  add_index "slugs", ["sluggable_id"], :name => "index_slugs_on_sluggable_id"
+  add_index "relations", ["actor_id"], :name => "index_relations_on_actor_id"
+  add_index "relations", ["ancestry"], :name => "index_relations_on_ancestry"
 
-  create_table "states", :force => true do |t|
-    t.string "name"
+  create_table "remote_subjects", :force => true do |t|
+    t.integer  "actor_id"
+    t.string   "webfinger_id"
+    t.text     "webfinger_info"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
+
+  add_index "remote_subjects", ["actor_id"], :name => "index_remote_subjects_on_actor_id"
+
+  create_table "rooms", :force => true do |t|
+    t.integer  "actor_id"
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "rooms", ["actor_id"], :name => "index_rooms_on_actor_id"
+
+  create_table "sites", :force => true do |t|
+    t.text     "config"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.string   "type"
+    t.integer  "actor_id"
+  end
+
+  add_index "sites", ["actor_id"], :name => "index_sites_on_actor_id"
 
   create_table "taggings", :force => true do |t|
     t.integer  "tag_id"
@@ -370,93 +369,43 @@ ActiveRecord::Schema.define(:version => 20131108215828) do
 
   add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
   add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
-  add_index "taggings", ["taggable_id", "taggable_type"], :name => "index_taggings_on_taggable_id_and_taggable_type"
-  add_index "taggings", ["taggable_id"], :name => "index_taggings_on_taggable_id"
-  add_index "taggings", ["taggable_type"], :name => "index_taggings_on_taggable_type"
 
   create_table "tags", :force => true do |t|
-    t.string  "name"
-    t.integer "taggings_count", :default => 0
+    t.string "name"
   end
 
-  add_index "tags", ["name"], :name => "index_tags_on_name"
-
-  create_table "topics", :force => true do |t|
-    t.integer  "forum_id"
-    t.integer  "user_id"
-    t.string   "title"
+  create_table "ties", :force => true do |t|
+    t.integer  "contact_id"
+    t.integer  "relation_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "hits",           :default => 0
-    t.integer  "sticky",         :default => 0
-    t.integer  "sb_posts_count", :default => 0
-    t.datetime "replied_at"
-    t.boolean  "locked",         :default => false
-    t.integer  "replied_by"
-    t.integer  "last_post_id"
   end
 
-  add_index "topics", ["forum_id", "replied_at"], :name => "index_topics_on_forum_id_and_replied_at"
-  add_index "topics", ["forum_id", "sticky", "replied_at"], :name => "index_topics_on_sticky_and_replied_at"
-  add_index "topics", ["forum_id"], :name => "index_topics_on_forum_id"
+  add_index "ties", ["contact_id"], :name => "index_ties_on_contact_id"
+  add_index "ties", ["relation_id"], :name => "index_ties_on_relation_id"
 
   create_table "users", :force => true do |t|
-    t.string   "login"
-    t.string   "email"
-    t.text     "description"
-    t.integer  "avatar_id"
-    t.string   "crypted_password"
+    t.string   "encrypted_password",     :limit => 128, :default => "",          :null => false
     t.string   "password_salt"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "persistence_token"
-    t.text     "stylesheet"
-    t.integer  "view_count",                           :default => 0
-    t.boolean  "vendor",                               :default => false
-    t.string   "activation_code",        :limit => 40
-    t.datetime "activated_at"
-    t.integer  "state_id"
-    t.integer  "metro_area_id"
-    t.string   "login_slug"
-    t.boolean  "notify_comments",                      :default => true
-    t.boolean  "notify_friend_requests",               :default => true
-    t.boolean  "notify_community_news",                :default => true
-    t.integer  "country_id"
-    t.boolean  "featured_writer",                      :default => false
-    t.datetime "last_login_at"
-    t.string   "zip"
-    t.date     "birthday"
-    t.string   "gender"
-    t.boolean  "profile_public",                       :default => true
-    t.integer  "activities_count",                     :default => 0
-    t.integer  "sb_posts_count",                       :default => 0
-    t.datetime "sb_last_seen_at"
-    t.integer  "role_id"
-    t.string   "single_access_token"
-    t.string   "perishable_token"
-    t.integer  "login_count",                          :default => 0
-    t.integer  "failed_login_count",                   :default => 0
-    t.datetime "last_request_at"
-    t.datetime "current_login_at"
-    t.string   "current_login_ip"
-    t.string   "last_login_ip"
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",                         :default => 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.string   "authentication_token"
+    t.datetime "created_at",                                                     :null => false
+    t.datetime "updated_at",                                                     :null => false
+    t.integer  "actor_id"
+    t.string   "language"
+    t.boolean  "connected",                             :default => false
+    t.string   "status",                                :default => "available"
+    t.boolean  "chat_enabled",                          :default => true
   end
 
-  add_index "users", ["activated_at"], :name => "index_users_on_activated_at"
-  add_index "users", ["avatar_id"], :name => "index_users_on_avatar_id"
-  add_index "users", ["created_at"], :name => "index_users_on_created_at"
-  add_index "users", ["featured_writer"], :name => "index_users_on_featured_writer"
-  add_index "users", ["last_request_at"], :name => "index_users_on_last_request_at"
-  add_index "users", ["login"], :name => "index_users_on_login"
-  add_index "users", ["login_slug"], :name => "index_users_on_login_slug"
-  add_index "users", ["persistence_token"], :name => "index_users_on_persistence_token"
-  add_index "users", ["vendor"], :name => "index_users_on_vendor"
-
-  create_table "votes", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "poll_id"
-    t.integer  "choice_id"
-    t.datetime "created_at"
-  end
+  add_index "users", ["actor_id"], :name => "index_users_on_actor_id"
+  add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
 end

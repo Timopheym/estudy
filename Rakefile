@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Estudy::Application.load_tasks
+SocialStream::Application.load_tasks
