@@ -21,29 +21,37 @@ class InfographicsController < ApplicationController
 
   def top
     # Build the JSON Search Normalized Object
-    @infografics = Infographic.find()
+    @infografics = Infographic.all()
     @comments = Array.new
 
     #@conversation_comments.each do |comment|
-      @comments << {
-          :id => 1,
-          :level => 1,
-          :content => 'asd',
-          :parent_id => 1,
-          :user_id => 1,
-          :created_at => 1
-      }
+    @comments << {
+        :id => 1,
+        :level => 1,
+        :content => 'asd',
+        :parent_id => 1,
+        :user_id => 1,
+        :created_at => 1
+    }
     #end
 
-    render :json => @comments
+    render :json => @infografics
+  end
+
+  def upload
+
+  end
+
+  def doUpload
+
   end
 
   def categories
     render :json => [
         {:id => 1, :name => "Политика"},
-        {:id => 2, :name => "здоровье"},
-        {:id => 3, :name => "космос"},
-        {:id => 4, :name => "технологий"},
+        {:id => 2, :name => "Здоровье"},
+        {:id => 3, :name => "Космос"},
+        {:id => 4, :name => "Технологий"},
         {:id => 5, :name => "СМИ"},
         {:id => 6, :name => "Животные"},
         {:id => 7, :name => "Юристы"},

@@ -19,3 +19,9 @@
 //= require social_stream-presence
 //= require social_stream-oauth2_server
 //= require_tree .
+
+$(function() {
+    $('.infographics-upload-form').ajaxForm(function() {
+        $('.infographics-upload-form').clearForm();
+    });
+});

@@ -18,6 +18,8 @@ SocialStream::Application.routes.draw do
 
      get 'infographics/categories' => 'infographics#categories'
      get 'infographics/top' => 'infographics#top'
+     get 'infographics/upload' => 'infographics#upload'
+     post 'infographics/upload' => 'infographics#doUpload'
      resources :infographics
      match 'infographics/new' => 'infographics#new'
      match 'infographics/search/:query' => 'infographics#search'
