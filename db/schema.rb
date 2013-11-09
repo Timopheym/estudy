@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131019131528) do
+ActiveRecord::Schema.define(:version => 20131109163525) do
 
   create_table "activities", :force => true do |t|
     t.integer  "activity_verb_id"
@@ -200,6 +200,18 @@ ActiveRecord::Schema.define(:version => 20131019131528) do
   end
 
   add_index "groups", ["actor_id"], :name => "index_groups_on_actor_id"
+
+  create_table "infographics", :force => true do |t|
+    t.integer  "type"
+    t.integer  "author_id"
+    t.integer  "ratingCount"
+    t.integer  "ratingSumm"
+    t.string   "name"
+    t.string   "description"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
+    t.string   "src",         :default => "stub.jpg"
+  end
 
   create_table "links", :force => true do |t|
     t.integer  "activity_object_id"

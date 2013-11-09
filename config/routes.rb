@@ -1,6 +1,7 @@
 SocialStream::Application.routes.draw do
   devise_for :users, :controllers => {:omniauth_callbacks => 'omniauth_callbacks'}
 
+  #resurce :infografics
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -14,6 +15,15 @@ SocialStream::Application.routes.draw do
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
+
+     get 'infographics/categories' => 'infographics#categories'
+     get 'infographics/top' => 'infographics#top'
+     resources :infographics
+     match 'infographics/new' => 'infographics#new'
+     match 'infographics/search/:query' => 'infographics#search'
+     match 'infographics/categories' => 'infographics#categories'
+     match 'infographics/categories/:category' => 'infographics#categories'
+
 
   # Sample resource route with options:
   #   resources :products do
