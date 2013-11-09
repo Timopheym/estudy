@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131109224835) do
+ActiveRecord::Schema.define(:version => 20131109233337) do
 
   create_table "activities", :force => true do |t|
     t.integer  "activity_verb_id"
@@ -224,6 +224,7 @@ ActiveRecord::Schema.define(:version => 20131109224835) do
     t.datetime "created_at",                          :null => false
     t.datetime "updated_at",                          :null => false
     t.string   "src",         :default => "stub.jpg"
+    t.string   "preview",     :default => "stub.jpg"
   end
 
   create_table "links", :force => true do |t|

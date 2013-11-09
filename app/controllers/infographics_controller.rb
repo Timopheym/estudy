@@ -2,39 +2,12 @@
 class InfographicsController < ApplicationController
   def index
     # Build the JSON Search Normalized Object
-    @infografics = Infographic.find()
-    @comments = Array.new
-
-    #@conversation_comments.each do |comment|
-      @comments << {
-          :id => 1,
-          :level => 1,
-          :content => 'asd',
-          :parent_id => 1,
-          :user_id => 1,
-          :created_at => 1
-      }
-    #end
-
-    render :json => @comments
+    @infografics = Infographic.all()
+    render :json => @infografics
   end
 
   def top
-    # Build the JSON Search Normalized Object
     @infografics = Infographic.all()
-    @comments = Array.new
-
-    #@conversation_comments.each do |comment|
-    @comments << {
-        :id => 1,
-        :level => 1,
-        :content => 'asd',
-        :parent_id => 1,
-        :user_id => 1,
-        :created_at => 1
-    }
-    #end
-
     render :json => @infografics
   end
 
@@ -43,7 +16,12 @@ class InfographicsController < ApplicationController
   end
 
   def doUpload
-
+    @infographic = Infographic.new(:img => params[:file])
+    if @infographic.save
+          render :json => [@photo.to_jq_upload].to_json
+    else
+      render :json => [{:error => "custom_failure"}], :status => 304
+    end
   end
 
   def categories

@@ -353,6 +353,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  carrierwave
   coffee-rails (~> 3.2.1)
   jquery-form-rails
   jquery-rails
