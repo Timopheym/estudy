@@ -61,6 +61,5 @@ class InfographicsController < ApplicationController
         {:id => 11, :name => "Еда"},
         {:id => 12, :name => "Наука"}
     ]
-
   end
 end
