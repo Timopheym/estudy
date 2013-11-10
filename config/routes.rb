@@ -24,7 +24,8 @@ SocialStream::Application.routes.draw do
      match 'infographics/new' => 'infographics#new'
      match 'infographics/search/:query' => 'infographics#search'
      match 'infographics/categories' => 'infographics#categories'
-     match 'infographics/categories/:category_id' => 'infographics#byCategory'
+     match 'infographics/categories/:category_id/top' => 'infographics#byCategoryTop'
+     match 'infographics/categories/:category_id/new' => 'infographics#byCategoryNew'
 
 
   # Sample resource route with options:

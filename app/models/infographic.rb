@@ -16,6 +16,7 @@ class Infographic < ActiveRecord::Base
 
   def self.with_category(category_id)
     if category_id.present?
+      logger.debug( :json => self.joins(:infographic_category).where(infographic_categories: {category_id: category_id}))
       self.joins(:infographic_category).where(infographic_categories: {category_id: category_id})
     else
       self

@@ -16,14 +16,22 @@ class InfographicsController < ApplicationController
     render :json => categoties2results(@infografics)
   end
 
-  def byCategory
-    @infografics = Infographic.with_category(params[:category_id])
-    render :json => @infografics
-    #render :json => categoties2results(@infografics)
+  def byCategoryTop
+    @infografics = Infographic.with_category(params[:category_id]).byRate()
+    render :json => categoties2results(@infografics)
+  end
+  def byCategoryNew
+    @infografics = Infographic.with_category(params[:category_id]).byDate()
+    render :json => categoties2results(@infografics)
   end
 
   def upload
 
+  end
+
+  def search
+    @infografics = Infographic.search(params[:query])
+    render :json => categoties2results(@infografics)
   end
 
   def doUpload
