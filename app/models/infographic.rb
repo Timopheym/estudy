@@ -28,7 +28,7 @@ class Infographic < ActiveRecord::Base
 
   def self.search(search)
     if search
-      self.select(:name).where("name LIKE '%"+search+"%'")
+      self.where("name LIKE '%"+search+"%'")
     else
       self.all
     end
