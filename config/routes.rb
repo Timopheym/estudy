@@ -25,8 +25,8 @@ SocialStream::Application.routes.draw do
 
      get 'infographics/categories' => 'infographics#categories'
      get 'infographics/top' => 'infographics#top'
+     get 'infographics/new' => 'infographics#new'
      get 'infographics/:id/' => 'infographics#get'
-     match 'infographics/new' => 'infographics#new'
      match 'infographics/search/:query' => 'infographics#search'
      match 'infographics/categories' => 'infographics#categories'
      match 'infographics/categories/:category_id/top' => 'infographics#byCategoryTop'
