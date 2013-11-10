@@ -16,3 +16,7 @@
 .infographics-upload-form{
     width: 300px;
 }
+#tabs {
+    width: 500px;
+    float: left;
+}

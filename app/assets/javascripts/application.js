@@ -25,3 +25,8 @@ $(function() {
         $('.infographics-upload-form').clearForm();
     });
 });
+
+$(function() {
+    console.log('tabs',$( "#tabs" ).length)
+    $( "#tabs" ).tabs();
+});
