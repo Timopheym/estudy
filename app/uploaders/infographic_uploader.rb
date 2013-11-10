@@ -2,8 +2,8 @@
 
 class InfographicUploader < CarrierWave::Uploader::Base
 
-  # Include RMagick or MiniMagick support:
-  # include CarrierWave::RMagick
+  #Include RMagick or MiniMagick support:
+  include CarrierWave::RMagick
   # include CarrierWave::MiniMagick
 
   # Choose what kind of storage to use for this uploader:
@@ -47,5 +47,61 @@ class InfographicUploader < CarrierWave::Uploader::Base
   # def filename
   #   "something.jpg" if original_filename
   # end
+
+
+  resize_to_limit(1024, 768)
+
+  #Change the size in two steps, height first then width
+  def two_step_resize(img, filename, max_x, max_y)
+    x = img.columns
+    y = img.rows
+
+    #make sure it's a float w/ the 1.0*
+    ratio = (1.0*x)/y
+
+    new_y = max_y
+    new_x = ratio * new_y
+
+    if (new_x > max_x)
+      new_x = max_x
+      new_y = new_x / ratio
+    end
+
+    # do the change in two steps, first the height
+    img.resize!(x, new_y);
+    #then the width
+    img.resize!(new_x, new_y)
+
+  end
+
+  # Process files as they are uploaded:
+  # process :scale => [200, 300]
+  #
+  def scale(width, height)
+    resize_to_fill(width, height)
+  end
+
+
+  def scale_to_height( height)
+    manipulate! do |img|
+      Rails.logger.debug img
+      ratio = img.rows.to_i/img.columns.to_i
+      width = ratio * height
+      img = img.resize_to_fill(width, height)
+      img
+    end
+  end
+
+  # Create different versions of your uploaded files:
+  version :medium do
+    #process :scale_to_height => [500]
+    process :scale => [300, 300]
+  end
+
+  version :thumb do
+    process :scale_to_height => [200]
+    #process :scale => [200, 200]
+  end
+
 
 end

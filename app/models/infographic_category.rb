@@ -1,4 +1,4 @@
-class InfographicCategory
+class InfographicCategory  < ActiveRecord::Base
   belongs_to :infographic
   belongs_to :category
   attr_accessible :infographic_id

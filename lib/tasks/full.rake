@@ -1,32 +1,29 @@
 task :full => :environment do
   categorias = Category.all()
+  dataDir = 'data-test'
   cat = -1
-  Dir.foreach('data') do |item|
+  Dir.foreach(dataDir) do |item|
     next if item == '.' or item == '..'
 
     categorias.each do |c|
       #puts c.name+">>"
       #puts item+"<<"
       if c.name == item
-        cat = c.id
+        cat = c
       end
     end
     #puts item
     #puts cat
 
 
-    list_of_files = Dir.entries('data/'+item)
+    list_of_files = Dir.entries(dataDir+'/'+item)
     list_of_files.each do |file|
       next if file == '.' or file == '..'
-      #puts file
-      #uploader = InfographicUploader.new
-      #uploader.store!(file)
       i = Infographic.new
-      i.src = File.open('data/'+item+'/'+file)
-      #i.category = cat
+      i.src = File.open(dataDir+'/'+item+'/'+file)
+      i.categories.push( cat)
       i.name = file
       i.save!
-      #puts i
     end
   end
 end

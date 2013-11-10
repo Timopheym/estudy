@@ -7,41 +7,19 @@ class InfographicsController < ApplicationController
   end
 
   def top
-    @infografics = Infographic.all()
-    result = []
-    @infografics.each do |infographic|
-      if infographic.kind == 0
-        type = "image"
-      else
-        type = "video"
-      end
-      result << {
-          :title => infographic.name,
-          :content => infographic.src.url,
-          :thumbnail => infographic.preview.url,
-          :type => type
-      }
-    end
-    render :json => result
+    @infografics = Infographic.byRate()
+    render :json => categoties2results(@infografics)
   end
 
   def new
-    @infografics = Infographic.all()
-    result = []
-    @infografics.each do |infographic|
-      if infographic.kind == 0
-        type = "image"
-      else
-        type = "video"
-      end
-      result << {
-          :title => infographic.name,
-          :content => infographic.src.url,
-          :thumbnail => infographic.preview.url,
-          :type => type
-      }
-    end
-    render :json => result
+    @infografics = Infographic.byDate()
+    render :json => categoties2results(@infografics)
+  end
+
+  def byCategory
+    @infografics = Infographic.with_category(params[:category_id])
+    render :json => @infografics
+    #render :json => categoties2results(@infografics)
   end
 
   def upload
@@ -59,20 +37,20 @@ class InfographicsController < ApplicationController
 
   def categories
     @categories = Category.all()
-    #render :json => [
-    #    {:id => 1, :name => "Политика"},
-    #    {:id => 2, :name => "Здоровье"},
-    #    {:id => 3, :name => "Космос"},
-    #    {:id => 4, :name => "Технологий"},
-    #    {:id => 5, :name => "СМИ"},
-    #    {:id => 6, :name => "Животные"},
-    #    {:id => 7, :name => "Юристы"},
-    #    {:id => 8, :name => "Экономика"},
-    #    {:id => 9, :name => "Транспорт"},
-    #    {:id => 10, :name => "Интересное"},
-    #    {:id => 11, :name => "Еда"},
-    #    {:id => 12, :name => "Наука"}
-    #]
     render :json => @categories
+  end
+
+  def categoties2results (cats)
+    result = []
+    type = "image"
+    cats.each do |infographic|
+      result << {
+          :title => infographic.name,
+          :content => infographic.src.url,
+          :thumbnail => infographic.src.thumb.url,
+          :type => type
+      }
+    end
+    result
   end
 end
