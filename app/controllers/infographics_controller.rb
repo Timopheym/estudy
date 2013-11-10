@@ -25,6 +25,9 @@ class InfographicsController < ApplicationController
     infographic = Infographic.find(params[:id])
     c = InfographicComment.new(:author => params[:author], :text => params[:text])
     c.infographic_id = infographic.id
+    logger.debug(params)
+    logger.debug('><')
+    logger.debug(params[:text])
     if c.save!
       render :json => {
           :status => true
@@ -34,7 +37,6 @@ class InfographicsController < ApplicationController
           :status => false
       }
     end
-
   end
 
   def setRating
