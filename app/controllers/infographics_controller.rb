@@ -1,15 +1,44 @@
 # encoding: UTF-8
 class InfographicsController < ApplicationController
-  def index
+  def get
+    type = 'image'
     # Build the JSON Search Normalized Object
-    @infografics = Infographic.all()
-    render :json => @infografics
+    infographic = Infographic.find(params[:id])
+    if infographic.ratingCount.to_i == 0
+      rating = 0
+    else
+      rating = infographic.ratingSumm.to_i/infographic.ratingCount.to_i
+    end
+    render :json => {
+        :title => infographic.name,
+        :content => infographic.src.url,
+        :type => type,
+        :rating => rating
+    }
+  end
+
+  def addComment
+    infographic = Infographic.find(params[:id])
+    c = InforaphicComment.new(:author => params[:author], :text => params[:text])
+    infographic.inforaphicComments.push(c)
+    infographic.save!
+
+  end
+  def setRating
+    infographic = Infographic.find(params[:id])
+    infographic.ratingSumm = (infographic.ratingSumm.to_i + params[:value].to_i)
+    infographic.ratingCount = infographic.ratingCount.to_i + 1
+    infographic.save!
+    render :json => {
+        :rating => infographic.ratingSumm.to_i / infographic.ratingCount.to_i
+    }
   end
 
   def top
     @infografics = Infographic.byRate()
     render :json => categoties2results(@infografics)
   end
+
 
   def new
     @infografics = Infographic.byDate()
@@ -53,8 +82,8 @@ class InfographicsController < ApplicationController
     type = "image"
     cats.each do |infographic|
       result << {
+          :id => infographic.id,
           :title => infographic.name,
-          :content => infographic.src.url,
           :thumbnail => infographic.src.thumb.url,
           :type => type
       }

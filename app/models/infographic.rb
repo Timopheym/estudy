@@ -1,9 +1,12 @@
+# encoding: UTF-8
+
 class Infographic < ActiveRecord::Base
   attr_accessible :id, :src,:preview
   mount_uploader :src, InfographicUploader
   mount_uploader :preview, InfographicUploader
   has_many :categories, :through => :infographic_category
   has_many :infographic_category
+  has_many :infographic_comment
   belongs_to :category
 
   def self.byDate

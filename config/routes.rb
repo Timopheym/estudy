@@ -1,3 +1,4 @@
+# encoding: UTF-8
 SocialStream::Application.routes.draw do
   devise_for :users, :controllers => {:omniauth_callbacks => 'omniauth_callbacks'}
 
@@ -16,11 +17,15 @@ SocialStream::Application.routes.draw do
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
+     get 'infographics/upload' => 'infographics#upload'
+     post 'infographics/upload' => 'infographics#doUpload'
+
+     post 'infographics/:id/rating' => 'infographics#setRating'
+     post 'infographics/:id/comments' => 'infographics#addComment'
+
      get 'infographics/categories' => 'infographics#categories'
      get 'infographics/top' => 'infographics#top'
-     get 'infographics/upload' => 'infographics#upload'
-     resources :infographics
-     post 'infographics/upload' => 'infographics#doUpload'
+     get 'infographics/:id/' => 'infographics#get'
      match 'infographics/new' => 'infographics#new'
      match 'infographics/search/:query' => 'infographics#search'
      match 'infographics/categories' => 'infographics#categories'

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 task :full => :environment do
   categorias = Category.all()
   dataDir = 'data'
@@ -9,7 +10,7 @@ task :full => :environment do
         cat = c
       end
     end
-    puts item.to_s + " " + cat.name.to_s
+    puts "Загружается категория: " + cat.name.to_s
     list_of_files = Dir.entries(dataDir+'/'+item)
     list_of_files.each do |file|
       next if file == '.' or file == '..' or file == '.DS_Store'

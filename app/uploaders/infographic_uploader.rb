@@ -99,7 +99,9 @@ class InfographicUploader < CarrierWave::Uploader::Base
   end
 
   version :thumb do
-    process :scale_to_height => [200]
+    #process :scale_to_height => [200]
+
+    process :resize_to_fit => [730, 336]
     #process :scale => [200, 200]
   end
 
