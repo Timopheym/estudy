@@ -25,6 +25,25 @@ class InfographicsController < ApplicationController
     render :json => result
   end
 
+  def new
+    @infografics = Infographic.all()
+    result = []
+    @infografics.each do |infographic|
+      if infographic.kind == 0
+        type = "image"
+      else
+        type = "video"
+      end
+      result << {
+          :title => infographic.name,
+          :content => infographic.src.url,
+          :thumbnail => infographic.preview.url,
+          :type => type
+      }
+    end
+    render :json => result
+  end
+
   def upload
 
   end
@@ -39,19 +58,21 @@ class InfographicsController < ApplicationController
   end
 
   def categories
-    render :json => [
-        {:id => 1, :name => "Политика"},
-        {:id => 2, :name => "Здоровье"},
-        {:id => 3, :name => "Космос"},
-        {:id => 4, :name => "Технологий"},
-        {:id => 5, :name => "СМИ"},
-        {:id => 6, :name => "Животные"},
-        {:id => 7, :name => "Юристы"},
-        {:id => 8, :name => "Экономика"},
-        {:id => 9, :name => "Транспорт"},
-        {:id => 10, :name => "Интересное"},
-        {:id => 11, :name => "Еда"},
-        {:id => 12, :name => "Наука"}
-    ]
+    @categories = Category.all()
+    #render :json => [
+    #    {:id => 1, :name => "Политика"},
+    #    {:id => 2, :name => "Здоровье"},
+    #    {:id => 3, :name => "Космос"},
+    #    {:id => 4, :name => "Технологий"},
+    #    {:id => 5, :name => "СМИ"},
+    #    {:id => 6, :name => "Животные"},
+    #    {:id => 7, :name => "Юристы"},
+    #    {:id => 8, :name => "Экономика"},
+    #    {:id => 9, :name => "Транспорт"},
+    #    {:id => 10, :name => "Интересное"},
+    #    {:id => 11, :name => "Еда"},
+    #    {:id => 12, :name => "Наука"}
+    #]
+    render :json => @categories
   end
 end

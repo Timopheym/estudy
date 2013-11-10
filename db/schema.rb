@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131109233337) do
+ActiveRecord::Schema.define(:version => 20131110005015) do
 
   create_table "activities", :force => true do |t|
     t.integer  "activity_verb_id"
@@ -136,7 +136,7 @@ ActiveRecord::Schema.define(:version => 20131109233337) do
   add_index "authentications", ["user_id"], :name => "index_authentications_on_user_id"
 
   create_table "categories", :force => true do |t|
-    t.integer "name"
+    t.string "name"
   end
 
   create_table "comments", :force => true do |t|

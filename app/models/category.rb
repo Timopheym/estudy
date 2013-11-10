@@ -1,6 +1,5 @@
-class Category
-  attr_accessible :img, :date
+class Category < ActiveRecord::Base
+  attr_accessible :name, :id
   has_many  :infographics, :through => :infographic_category
-  attr_accessible :id
 
 end
