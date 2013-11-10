@@ -18,6 +18,7 @@ class InfographicsController < ApplicationController
         :content => infographic.src.url,
         :type => type,
         :rating => rating,
+        :thumbnail => infographic.src.thumb.url,
         :comments => comments
     }
   end
@@ -42,6 +43,8 @@ class InfographicsController < ApplicationController
     infographic.ratingSumm = (infographic.ratingSumm.to_i + params[:value].to_i)
     infographic.ratingCount = infographic.ratingCount.to_i + 1
     infographic.save!
+    logger.debug(params[:id])
+    logger.debug(params[:value])
     render :json => {
         :rating => infographic.ratingSumm.to_i / infographic.ratingCount.to_i
     }
