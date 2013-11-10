@@ -8,7 +8,21 @@ class InfographicsController < ApplicationController
 
   def top
     @infografics = Infographic.all()
-    render :json => @infografics
+    result = []
+    @infografics.each do |infographic|
+      if infographic.kind == 0
+        type = "image"
+      else
+        type = "video"
+      end
+      result << {
+          :title => infographic.name,
+          :content => infographic.src.url,
+          :thumbnail => infographic.preview.url,
+          :type => type
+      }
+    end
+    render :json => result
   end
 
   def upload
