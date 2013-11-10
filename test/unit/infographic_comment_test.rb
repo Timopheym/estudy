@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class InforaphicCommentTest < ActiveSupport::TestCase
+class InfographicCommentTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

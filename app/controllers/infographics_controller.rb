@@ -9,21 +9,34 @@ class InfographicsController < ApplicationController
     else
       rating = infographic.ratingSumm.to_i/infographic.ratingCount.to_i
     end
+    comments = InfographicComment.where('infographic_id', infographic.id)
+    #comments = infographic.infographic_comments
+
     render :json => {
         :title => infographic.name,
         :content => infographic.src.url,
         :type => type,
-        :rating => rating
+        :rating => rating,
+        :comments => comments
     }
   end
 
   def addComment
     infographic = Infographic.find(params[:id])
-    c = InforaphicComment.new(:author => params[:author], :text => params[:text])
-    infographic.inforaphicComments.push(c)
-    infographic.save!
+    c = InfographicComment.new(:author => params[:author], :text => params[:text])
+    c.infographic_id = infographic.id
+    if c.save!
+      render :json => {
+          :status => true
+      }
+    else
+      render :json => {
+          :status => false
+      }
+    end
 
   end
+
   def setRating
     infographic = Infographic.find(params[:id])
     infographic.ratingSumm = (infographic.ratingSumm.to_i + params[:value].to_i)

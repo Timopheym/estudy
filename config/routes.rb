@@ -21,7 +21,7 @@ SocialStream::Application.routes.draw do
      post 'infographics/upload' => 'infographics#doUpload'
 
      post 'infographics/:id/rating' => 'infographics#setRating'
-     post 'infographics/:id/comments' => 'infographics#addComment'
+     get 'infographics/:id/comments' => 'infographics#addComment'
 
      get 'infographics/categories' => 'infographics#categories'
      get 'infographics/top' => 'infographics#top'
