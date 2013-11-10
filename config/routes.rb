@@ -24,6 +24,7 @@ SocialStream::Application.routes.draw do
      get 'infographics/:id/comments' => 'infographics#addComment'
 
      get 'infographics/categories' => 'infographics#categories'
+     get 'infographics' => 'infographics#index'
      get 'infographics/top' => 'infographics#top'
      get 'infographics/new' => 'infographics#new'
      get 'infographics/:id/' => 'infographics#get'

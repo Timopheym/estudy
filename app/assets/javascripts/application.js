@@ -24,9 +24,5 @@ $(function() {
     $('.infographics-upload-form').ajaxForm(function() {
         $('.infographics-upload-form').clearForm();
     });
-});
-
-$(function() {
-    console.log('tabs',$( "#tabs" ).length)
-    $( "#tabs" ).tabs();
+    $(".owl-carousel").owlCarousel();
 });

@@ -1,0 +1,7 @@
+
+<script src="owl.carousel.js"></script>
+<div class="owl-carousel">
+  <% @infografics.each do |infografic| %>
+      <div> <img src="<%= infografic.src.url %>"> </div>
+  <% end %>
+</div>

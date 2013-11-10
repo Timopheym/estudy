@@ -1,5 +1,8 @@
 # encoding: UTF-8
 class InfographicsController < ApplicationController
+  def index
+    @infografics = Infographic.byRate()
+  end
   def get
     type = 'image'
     # Build the JSON Search Normalized Object

@@ -7,7 +7,6 @@ task :full => :environment do
   Dir.foreach(dataDir) do |item|
     next if item == '.' or item == '..' or item == '.DS_Store'
     categorias.each do |c|
-      puts c.name.to_s + ' ' + item.to_s
       if c.name.to_s == item.to_s
         cat = c
       end
