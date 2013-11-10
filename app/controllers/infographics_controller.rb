@@ -9,7 +9,8 @@ class InfographicsController < ApplicationController
     else
       rating = infographic.ratingSumm.to_i/infographic.ratingCount.to_i
     end
-    comments = InfographicComment.where('infographic_id', infographic.id)
+
+    comments = InfographicComment.where(infographic_id: params[:id])
     #comments = infographic.infographic_comments
 
     render :json => {
@@ -25,9 +26,6 @@ class InfographicsController < ApplicationController
     infographic = Infographic.find(params[:id])
     c = InfographicComment.new(:author => params[:author], :text => params[:text])
     c.infographic_id = infographic.id
-    logger.debug(params)
-    logger.debug('><')
-    logger.debug(params[:text])
     if c.save!
       render :json => {
           :status => true
